@@ -13,3 +13,5 @@ saves/
 */game/*.py
 
 .*
+
+deps/
