@@ -33,21 +33,23 @@ screen battle(turnman):
                 xalign 0.0
                 has vbox
                 label "left"
-                use battle_side(turnman.world.sides['left'])
+                use battle_side(turnman.sides[0])
             frame:
                 xalign 1.0
                 has vbox
                 label "right"
-                use battle_side(turnman.world.sides['right'])
+                use battle_side(turnman.sides[1])
         button:
             yalign 1.0
             label "end turn"
             action UFunction(turnman.turn)
 
-screen battle_side(side):
+screen battle_side(controller):
+    $ world = controller.world
+    $ side = tuple(controller.entities)[0]
     frame:
         has vbox
-        for unit in side:
+        for unit in side.members:
             label "{}".format(unit).replace('{', '').replace('}', '')
             button:
                 label "kill"
