@@ -2,7 +2,8 @@
     from compat import *
     from test_battle import prepare_battle, Goblin, AIBattleController
     from entity import Entity
-    from controller import ProxyController
+    from controller import UserController
+    from battleuimanager import BattleUIManager
     import classpatch
     
     class NamedGoblin(Entity):
@@ -12,47 +13,7 @@
             if not self.name:
                 self.name = 'Goblin'
     classpatch.register(Goblin, 'mod', NamedGoblin)
-    
-    class UserController(ProxyController):
-        pass
-    
-    class BattleUIManager(object):
-        # We expect two-side battle with only one side controlled by user!
-        def __init__(self, turnman):
-            super(BattleUIManager, self).__init__()
-            self.turnman = turnman
-            self.selected = None
-            self.user_controller = [s for s in self.turnman.sides if isinstance(s, UserController)][0]
-        
-        def clicked(self, side, entity):
-            # TODO: ugh, fix this
-            controller = [s for s in self.turnman.sides if tuple(s.entities)[0] == side][0]
-            if isinstance(controller, UserController):
-                self.select(entity)
-            else:
-                self.attack(entity)
-        
-        def select(self, entity):
-            self.selected = entity
-        
-        def attack(self, entity):
-            if not self.selected:
-                return
-            if self.selected.living != 'alive':
-                self.selected = None
-                return
-            action = self.selected.hit(entity)
-            if action:
-                self.do_action(action)
-        
-        def do_action(self, action):
-            self.user_controller.do_action(action)
-            self.turnman.turn()
-        
-        def end_turn(self):
-            self.user_controller.end_turn()
-            self.turnman.turn()
-            self.turnman.turn()
+
 
 label start:
     "Dracykeiton demo."
