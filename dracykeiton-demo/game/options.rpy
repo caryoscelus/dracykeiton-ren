@@ -16,8 +16,12 @@ init -1 python hide:
     config.developer = True
     config.autoreload = False
     
-    # cPickle seems to be incompatible with dill
+    ## cPickle seems to be incompatible with dill
     config.use_cpickle = False
+    
+    ## Automatic images
+    config.automatic_images = ['/', '-']
+    config.automatic_images_strip = ['images']
 
     ## These control the width and height of the screen.
 
