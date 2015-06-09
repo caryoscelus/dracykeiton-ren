@@ -4,6 +4,8 @@
     from entity import Entity, simplenode
     from controller import UserController
     from battleuimanager import BattleUIManager
+    from turnman import Turnman
+    from action import SimpleEffectProcessor
     import classpatch
     
     class NamedGoblin(Entity):
@@ -27,11 +29,21 @@
             if not value:
                 return self.kind + ' ' + self.visual_state
     classpatch.register(Goblin, 'mod', VisualEntity)
+    
+    class VisualTurnman(Turnman, SimpleEffectProcessor):
+        def __init__(self, *args, **kwargs):
+            super(VisualTurnman, self).__init__(*args, **kwargs)
+            self.add_effect('hit', self.hit_effect)
+        
+        def hit_effect(self, action):
+            (attacker, attacked) = action.args
+            attacker.visual_state = 'attack'
+            attacked.visual_state = 'attacked'
 
 label start:
     "Dracykeiton demo."
     $ renpy.retain_after_load()
-    $ battle = prepare_battle(UserController, AIBattleController)
+    $ battle = prepare_battle(UserController, AIBattleController, VisualTurnman)
     $ battle.start()
     $ manager = BattleUIManager(battle)
     call screen battle(manager)
