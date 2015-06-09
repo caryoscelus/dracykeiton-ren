@@ -4,7 +4,7 @@
     from entity import Entity, simplenode
     from controller import UserController
     from battleuimanager import BattleUIManager
-    from turnman import Turnman
+    from turnman import LockableTurnman
     from action import SimpleEffectProcessor
     import classpatch
     
@@ -30,7 +30,7 @@
                 return self.kind + ' ' + self.visual_state
     classpatch.register(Goblin, 'mod', VisualEntity)
     
-    class VisualTurnman(Turnman, SimpleEffectProcessor):
+    class VisualTurnman(LockableTurnman, SimpleEffectProcessor):
         def __init__(self, *args, **kwargs):
             super(VisualTurnman, self).__init__(*args, **kwargs)
             self.add_effect('hit', self.hit_effect)
@@ -39,6 +39,7 @@
             (attacker, attacked) = action.args
             attacker.visual_state = 'attack'
             attacked.visual_state = 'attacked'
+            self.lock()
 
 label start:
     "Dracykeiton demo."
