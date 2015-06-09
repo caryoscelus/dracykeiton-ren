@@ -1,7 +1,7 @@
 ﻿init python:
     from compat import *
-    from test_battle import prepare_battle, Goblin, AIBattleController
-    from entity import Entity
+    from test_battle import prepare_battle, Goblin, AIBattleController, KindEntity
+    from entity import Entity, simplenode
     from controller import UserController
     from battleuimanager import BattleUIManager
     import classpatch
@@ -17,15 +17,16 @@
     class VisualEntity(Entity):
         @unbound
         def _init(self):
-            self.dynamic_property('img')
-    
-    class VisualGoblin(Entity):
-        @unbound
-        def _init(self):
-            self.req_mod(VisualEntity)
-            self.img = 'goblin normal'
-    
-    classpatch.register(Goblin, 'mod', VisualGoblin)
+            self.req_mod(KindEntity)
+            self.dynamic_property('image')
+            self.dynamic_property('visual_state', 'default')
+            self.add_get_node('image', self.get_image())
+        
+        @simplenode
+        def get_image(self, value):
+            if not value:
+                return self.kind + ' ' + self.visual_state
+    classpatch.register(Goblin, 'mod', VisualEntity)
 
 label start:
     "Dracykeiton demo."
@@ -66,6 +67,6 @@ screen battle_side(manager, side):
                     label entity.name
                     label "hp {}/{}".format(entity.hp, entity.maxhp)
                     label "ap {}/{}".format(entity.ap, entity.maxap)
-                    add entity.img
+                    add entity.image
                 
                 action UFunction(manager.clicked, side, entity)
