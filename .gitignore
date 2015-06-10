@@ -10,8 +10,6 @@ traceback.txt
 tmp/
 saves/
 
-*/game/*.py
-
 .*
 
 deps/
