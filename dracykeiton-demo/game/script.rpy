@@ -27,6 +27,8 @@
         @simplenode
         def get_image(self, value):
             if not value:
+                if not self.kind:
+                    return None
                 return self.kind + ' ' + self.visual_state
     classpatch.register(Goblin, 'mod', VisualEntity)
     
@@ -85,6 +87,7 @@ screen battle_side(manager, side):
                     label entity.name
                     label "hp {}/{}".format(entity.hp, entity.maxhp)
                     label "ap {}/{}".format(entity.ap, entity.maxap)
-                    add entity.image
+                    if entity.image:
+                        add entity.image
                 
                 action UFunction(manager.clicked, side, entity)
