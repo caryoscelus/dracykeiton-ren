@@ -40,6 +40,11 @@
             attacker.visual_state = 'attack'
             attacked.visual_state = 'attacked'
             self.lock()
+            ui.timer(3, [UFunction(self.hit_uneffect, attacker, attacked), UFunction(self.unlock)])
+        
+        def hit_uneffect(self, attacker, attacked):
+            attacker.visual_state = 'default'
+            attacked.visual_state = 'default'
 
 label start:
     "Dracykeiton demo."
