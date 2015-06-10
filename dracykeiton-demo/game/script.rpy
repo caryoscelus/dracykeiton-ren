@@ -54,6 +54,7 @@ label start:
     $ battle = prepare_battle(UserController, AIBattleController, VisualTurnman)
     $ battle.start()
     $ manager = BattleUIManager(battle)
+    $ renpy.save('test')
     call screen battle(manager)
     return
 
