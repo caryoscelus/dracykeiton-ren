@@ -31,7 +31,20 @@
                 if not self.kind:
                     return None
                 return self.kind + ' ' + self.visual_state
-    classpatch.register(Goblin, 'mod', VisualEntity)
+    
+    class VisualDyingEntity(Entity):
+        @unbound
+        def _init(self):
+            self.req_mod(VisualEntity)
+            self.add_get_node('visual_state', self.check_if_dead())
+        
+        @simplenode
+        def check_if_dead(self, value):
+            if self.living == 'dead':
+                return 'dead'
+            else:
+                return value
+    classpatch.register(Goblin, 'mod', VisualDyingEntity)
 
 label main_menu:
     return
