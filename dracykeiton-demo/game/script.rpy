@@ -33,6 +33,9 @@
                 return self.kind + ' ' + self.visual_state
     classpatch.register(Goblin, 'mod', VisualEntity)
 
+label main_menu:
+    return
+
 label start:
     "Dracykeiton demo."
     $ renpy.retain_after_load()
