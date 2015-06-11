@@ -7,6 +7,7 @@
     from turnman import LockableTurnman
     from action import SimpleEffectProcessor
     from visual import VisualTurnman
+    from proxyentity import ProxyEntity
     import classpatch
     
     class NamedGoblin(Entity):
@@ -81,14 +82,18 @@ screen battle(manager):
             action UFunction(manager.end_turn)
 
 screen battle_side(manager, side):
+    default proxies = {}
     frame:
         has vbox
         for entity in side.members:
+            if not entity in proxies:
+                $ proxies[entity] = ProxyEntity(entity)
+            $ proxy = proxies[entity]
             button:
                 vbox:
                     label entity.name
-                    label "hp {}/{}".format(entity.hp, entity.maxhp)
-                    label "ap {}/{}".format(entity.ap, entity.maxap)
+                    label "hp {}/{}".format(proxy.hp, proxy.maxhp)
+                    label "ap {}/{}".format(proxy.ap, proxy.maxap)
                     if entity.image:
                         add entity.image
                 
