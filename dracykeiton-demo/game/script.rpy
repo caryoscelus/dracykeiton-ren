@@ -7,7 +7,7 @@
     from turnman import LockableTurnman
     from action import SimpleEffectProcessor
     from visual import VisualTurnman
-    from proxyentity import ProxyEntity
+    from proxyentity import ProxyEntity, CachedEntity
     import classpatch
     
     class NamedGoblin(Entity):
@@ -46,6 +46,43 @@
             else:
                 return value
     classpatch.register(Goblin, 'mod', VisualDyingEntity)
+    
+    class InterpolatingCache(Entity):
+        @unbound
+        def _init(self, delay=1.0):
+            self.req_mod(ProxyEntity)
+            self.req_mod(CachedEntity)
+        
+        @unbound
+        def cache_interpolate_float(self, name, f):
+            self.proxy_listen(name)
+            self.cache_property(name, self.update)
+            self.update_cache(name, 'progress', 1)
+        
+        @unbound
+        def update(self, name, old_value, value):
+            self.update_cache(name, 'progress', 0)
+        
+        @unbound
+        def tick(self, time):
+            for name in self._property_cache:
+                self.update_property(name, time)
+        
+        @unbound
+        def update_property(self, name, time):
+            pr = self.cached(name, 'progress')
+            if pr >= 1:
+                return
+            pr = min(1, pr+time)
+            self.update_cache(name, 'progress', pr)
+            self.update_cache(name, 'current', self.cached(name, 'old')*(1-pr)+self.cached(name, 'new')*pr)
+    
+    class ProxyGoblin(Entity):
+        @unbound
+        def _init(self):
+            self.req_mod(ProxyEntity)
+            self.req_mod(InterpolatingCache, 1)
+            self.cache_interpolate_float('hp', renpy.atl.warpers['linear'])
 
 label main_menu:
     return
@@ -81,20 +118,29 @@ screen battle(manager):
             label "end turn"
             action UFunction(manager.end_turn)
 
+init python:
+    def updateProxies(proxies, delay):
+        for proxy in proxies.values():
+            proxy.tick(delay)
+
 screen battle_side(manager, side):
     default proxies = {}
+    timer 0.1 repeat True action UFunction(updateProxies, proxies, 0.1)
     frame:
         has vbox
         for entity in side.members:
             if not entity in proxies:
-                $ proxies[entity] = ProxyEntity(entity)
-            $ proxy = proxies[entity]
+                $ proxy = ProxyEntity(entity)
+                $ proxy.req_mod(ProxyGoblin)
+                $ proxies[entity] = proxy
+            else:
+                $ proxy = proxies[entity]
             button:
                 vbox:
-                    label entity.name
+                    label proxy.name
                     label "hp {}/{}".format(proxy.hp, proxy.maxhp)
                     label "ap {}/{}".format(proxy.ap, proxy.maxap)
-                    if entity.image:
-                        add entity.image
+                    if proxy.image:
+                        add proxy.image
                 
                 action UFunction(manager.clicked, side, entity)
