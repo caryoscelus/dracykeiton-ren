@@ -137,8 +137,8 @@ label start:
     "Dracykeiton demo."
     $ renpy.retain_after_load()
     $ battle = prepare_battle(UserController, AIBattleController, VisualTurnman, True)
-    $ battle.start()
     $ manager = BattleUIManager(battle)
+    $ manager.start()
     $ renpy.save('test')
     call screen battle(manager)
     return
