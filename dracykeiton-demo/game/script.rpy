@@ -52,6 +52,7 @@
         def _init(self, delay=1.0):
             self.req_mod(ProxyEntity)
             self.req_mod(CachedEntity)
+            self.dynamic_property('_interpolating_st', None)
         
         @unbound
         def cache_interpolate_float(self, name, f):
@@ -64,7 +65,11 @@
             self.update_cache(name, 'progress', 0)
         
         @unbound
-        def tick(self, time):
+        def tick(self, st):
+            if self._interpolating_st is None:
+                self._interpolating_st = st
+            time = st-self._interpolating_st
+            self._interpolating_st = st
             rs = None
             for name in self._property_cache:
                 r = self.update_property(name, time)
@@ -94,18 +99,36 @@
             self.proxy = proxy
             self.entity_text = text
             t = self.entity_text.format(self.proxy)
-            self.st = None
             super(EntityText, self).__init__(t, *args, **kwargs)
         def render(self, width, height, st, at):
-            if self.st is None:
-                self.st = st
-            r = self.proxy.tick(st-self.st)
+            r = self.proxy.tick(st)
             self.st = st
             if r:
                 t = self.entity_text.format(self.proxy)
                 self.set_text(t)
                 renpy.display.render.redraw(self, 0)
             return super(EntityText, self).render(width, height, st, at)
+    
+    class EntityValue(BarValue):
+        def __init__(self, entity, name, range):
+            self.entity = entity
+            self.name = name
+            self.adjustment = None
+            self.range = range
+        
+        def get_adjustment(self):
+            self.adjustment = ui.adjustment(value=self.value(), range=self.range, adjustable=False)
+            return self.adjustment
+        
+        def value(self):
+            return getattr(self.entity, self.name)
+        
+        def periodic(self, st):
+            r = self.entity.tick(st)
+            self.adjustment.change(self.value())
+            if r:
+                return 0
+            return None
 
 label main_menu:
     return
@@ -161,6 +184,7 @@ screen battle_side(manager, side):
                 vbox:
                     label proxy.name
                     add EntityText(proxy, "hp {0.hp:.0f}/{0.maxhp:.0f}")
+                    bar value EntityValue(proxy, 'hp', proxy.maxhp)
                     label "ap {}/{}".format(proxy.ap, proxy.maxap)
                     if proxy.image:
                         add proxy.image
