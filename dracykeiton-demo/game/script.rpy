@@ -65,17 +65,22 @@
         
         @unbound
         def tick(self, time):
+            rs = None
             for name in self._property_cache:
-                self.update_property(name, time)
+                r = self.update_property(name, time)
+                rs = rs or r
+            return rs
         
         @unbound
         def update_property(self, name, time):
             pr = self.cached(name, 'progress')
             if pr >= 1:
-                return
+                return None
             pr = min(1, pr+time)
             self.update_cache(name, 'progress', pr)
             self.update_cache(name, 'current', self.cached(name, 'old')*(1-pr)+self.cached(name, 'new')*pr)
+            self.notify_listeners(name)
+            return True
     
     class ProxyGoblin(Entity):
         @unbound
@@ -83,6 +88,24 @@
             self.req_mod(ProxyEntity)
             self.req_mod(InterpolatingCache, 1)
             self.cache_interpolate_float('hp', renpy.atl.warpers['linear'])
+    
+    class EntityText(Text):
+        def __init__(self, proxy, text, *args, **kwargs):
+            self.proxy = proxy
+            self.entity_text = text
+            t = self.entity_text.format(self.proxy)
+            self.st = None
+            super(EntityText, self).__init__(t, *args, **kwargs)
+        def render(self, width, height, st, at):
+            if self.st is None:
+                self.st = st
+            r = self.proxy.tick(st-self.st)
+            self.st = st
+            if r:
+                t = self.entity_text.format(self.proxy)
+                self.set_text(t)
+                renpy.display.render.redraw(self, 0)
+            return super(EntityText, self).render(width, height, st, at)
 
 label main_menu:
     return
@@ -125,7 +148,6 @@ init python:
 
 screen battle_side(manager, side):
     default proxies = {}
-    timer 0.1 repeat True action UFunction(updateProxies, proxies, 0.1)
     frame:
         has vbox
         for entity in side.members:
@@ -138,7 +160,7 @@ screen battle_side(manager, side):
             button:
                 vbox:
                     label proxy.name
-                    label "hp {}/{}".format(proxy.hp, proxy.maxhp)
+                    add EntityText(proxy, "hp {0.hp:.0f}/{0.maxhp:.0f}")
                     label "ap {}/{}".format(proxy.ap, proxy.maxap)
                     if proxy.image:
                         add proxy.image
