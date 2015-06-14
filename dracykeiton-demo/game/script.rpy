@@ -8,6 +8,7 @@
     from action import SimpleEffectProcessor
     from visual import VisualTurnman
     from proxyentity import ProxyEntity, CachedEntity
+    from interpolate import InterpolatingCache
     import classpatch
     
     class NamedGoblin(Entity):
@@ -46,47 +47,6 @@
             else:
                 return value
     classpatch.register(Goblin, 'mod', VisualDyingEntity)
-    
-    class InterpolatingCache(Entity):
-        @unbound
-        def _init(self, delay=1.0):
-            self.req_mod(ProxyEntity)
-            self.req_mod(CachedEntity)
-            self.dynamic_property('_interpolating_st', None)
-        
-        @unbound
-        def cache_interpolate_float(self, name, f):
-            self.proxy_listen(name)
-            self.cache_property(name, self.update)
-            self.update_cache(name, 'progress', 1)
-        
-        @unbound
-        def update(self, name, old_value, value):
-            self.update_cache(name, 'progress', 0)
-        
-        @unbound
-        def tick(self, st):
-            if self._interpolating_st is None:
-                self._interpolating_st = st
-            time = st-self._interpolating_st
-            self._interpolating_st = st
-            rs = None
-            for name in self._property_cache:
-                r = self.update_property(name, time)
-                rs = rs or r
-            return rs
-        
-        @unbound
-        def update_property(self, name, time):
-            pr = self.cached(name, 'progress')
-            if pr >= 1:
-                self._interpolating_st = None
-                return None
-            pr = min(1, pr+time)
-            self.update_cache(name, 'progress', pr)
-            self.update_cache(name, 'current', self.cached(name, 'old')*(1-pr)+self.cached(name, 'new')*pr)
-            self.notify_listeners(name)
-            return True
     
     class ProxyGoblin(Entity):
         @unbound
