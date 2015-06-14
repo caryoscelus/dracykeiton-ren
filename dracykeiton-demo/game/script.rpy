@@ -164,11 +164,6 @@ screen battle(manager):
             label "end turn"
             action UFunction(manager.end_turn)
 
-init python:
-    def updateProxies(proxies, delay):
-        for proxy in proxies.values():
-            proxy.tick(delay)
-
 screen battle_side(manager, side):
     default proxies = {}
     frame:
