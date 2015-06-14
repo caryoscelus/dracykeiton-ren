@@ -80,6 +80,7 @@
         def update_property(self, name, time):
             pr = self.cached(name, 'progress')
             if pr >= 1:
+                self._interpolating_st = None
                 return None
             pr = min(1, pr+time)
             self.update_cache(name, 'progress', pr)
