@@ -1,6 +1,6 @@
-from compat import *
+from dracykeiton.compat import *
 import renpy
-import curry
+from dracykeiton.util import curry
 
 class UFunction(renpy.ui.Action):
     "Like Function, but make sure to update screen"

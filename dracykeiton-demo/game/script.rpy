@@ -1,15 +1,15 @@
 ﻿init python:
-    from compat import *
+    from dracykeiton.compat import *
     from test_battle import prepare_battle, Goblin, AIBattleController, KindEntity
-    from entity import Entity, simplenode
-    from controller import UserController
-    from battleuimanager import BattleUIManager
-    from turnman import LockableTurnman
-    from action import SimpleEffectProcessor
+    from dracykeiton.entity import Entity, simplenode
+    from dracykeiton.controller import UserController
+    from dracykeiton.battleuimanager import BattleUIManager
+    from dracykeiton.turnman import LockableTurnman
+    from dracykeiton.action import SimpleEffectProcessor
     from visual import VisualTurnman
-    from proxyentity import ProxyEntity, CachedEntity
-    from interpolate import InterpolatingCache
-    import classpatch
+    from dracykeiton.proxyentity import ProxyEntity, CachedEntity
+    from dracykeiton.interpolate import InterpolatingCache
+    from dracykeiton.common import LivingEntity
     
     class NamedGoblin(Entity):
         @unbound
@@ -17,7 +17,7 @@
             self.dynamic_property('name')
             if not self.name:
                 self.name = 'Goblin'
-    classpatch.register(Goblin, 'mod', NamedGoblin)
+    Goblin.global_mod(NamedGoblin)
     
     class VisualEntity(Entity):
         @unbound
@@ -33,11 +33,13 @@
                 if not self.kind:
                     return None
                 return self.kind + ' ' + self.visual_state
+            return value
     
     class VisualDyingEntity(Entity):
         @unbound
         def _init(self):
             self.req_mod(VisualEntity)
+            self.req_mod(LivingEntity)
             self.add_get_node('visual_state', self.check_if_dead())
         
         @simplenode
@@ -46,7 +48,7 @@
                 return 'dead'
             else:
                 return value
-    classpatch.register(Goblin, 'mod', VisualDyingEntity)
+    Goblin.global_mod(VisualDyingEntity)
     
     class ProxyGoblin(Entity):
         @unbound

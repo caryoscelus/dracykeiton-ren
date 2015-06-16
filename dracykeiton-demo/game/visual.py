@@ -1,7 +1,7 @@
-from compat import *
+from dracykeiton.compat import *
 from util import UFunction
-from turnman import LockableTurnman
-from action import SimpleEffectProcessor
+from dracykeiton.turnman import LockableTurnman
+from dracykeiton.action import SimpleEffectProcessor
 import renpy
 
 class VisualTurnman(LockableTurnman, SimpleEffectProcessor):
