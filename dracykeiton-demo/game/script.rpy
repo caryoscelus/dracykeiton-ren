@@ -169,11 +169,11 @@ screen battle_side(manager, side):
                 $ proxy = proxies[entity]
             button:
                 vbox:
-                    label proxy.name
+                    label proxy.name text_bold (proxy == manager.selected)
                     add EntityText(proxy, "hp {0.hp:.0f}/{0.maxhp:.0f}")
                     bar value EntityValue(proxy, 'hp', proxy.maxhp)
                     label "ap {}/{}".format(proxy.ap, proxy.maxap)
                     if proxy.image:
                         add proxy.image
                 
-                action UFunction(manager.clicked, side, entity)
+                action UFunction(manager.clicked, side, proxy)
