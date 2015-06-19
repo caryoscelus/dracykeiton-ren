@@ -22,7 +22,7 @@ init python:
     from dracykeiton.compat import *
     from dracykeiton.entity import Entity, simplenode
     from dracykeiton.tb.controller import UserController
-    from dracykeiton.tb.battleuimanager import BattleUIManager
+    from dracykeiton.ui.battleuimanager import BattleUIManager
     from dracykeiton.tb.turnman import LockableTurnman
     from dracykeiton.action import SimpleEffectProcessor
     from visual import VisualTurnman
