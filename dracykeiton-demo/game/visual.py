@@ -1,6 +1,6 @@
 from dracykeiton.compat import *
 from util import UFunction
-from dracykeiton.turnman import LockableTurnman
+from dracykeiton.tb.turnman import LockableTurnman
 from dracykeiton.action import SimpleEffectProcessor
 import renpy
 

@@ -1,15 +1,17 @@
 ﻿init python:
     from dracykeiton.compat import *
-    from test_battle import prepare_battle, Goblin, AIBattleController, KindEntity
     from dracykeiton.entity import Entity, simplenode
-    from dracykeiton.controller import UserController
-    from dracykeiton.battleuimanager import BattleUIManager
-    from dracykeiton.turnman import LockableTurnman
+    from dracykeiton.tb.controller import UserController
+    from dracykeiton.tb.battleuimanager import BattleUIManager
+    from dracykeiton.tb.turnman import LockableTurnman
     from dracykeiton.action import SimpleEffectProcessor
     from visual import VisualTurnman
     from dracykeiton.proxyentity import ProxyEntity, CachedEntity
     from dracykeiton.interpolate import InterpolatingCache
-    from dracykeiton.common import LivingEntity
+    from dracykeiton.common.sandbox.goblin import Goblin, GoblinLeader
+    from dracykeiton.common import LivingEntity, KindEntity
+    from dracykeiton.ai.sandbox.battleai import AIBattleController
+    from dracykeiton.tb.encounter import Encounter
     
     class NamedGoblin(Entity):
         @unbound
@@ -92,6 +94,13 @@
             if r:
                 return 0
             return None
+    
+    def prepare_battle(left_c, right_c, turnman, keep_dead=False):
+        """Prepare battle with given side controllers"""
+        encounter = Encounter(turnman, keep_dead=keep_dead)
+        encounter.add_side('left', left_c, 2, predefined=[Goblin(), GoblinLeader()])
+        encounter.add_side('right', right_c, 3, predefined=[Goblin(), Goblin(), Goblin()])
+        return encounter.generate()
 
 label main_menu:
     return
