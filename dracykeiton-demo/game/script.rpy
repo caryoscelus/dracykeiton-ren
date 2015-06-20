@@ -22,7 +22,7 @@ init python:
     from dracykeiton.compat import *
     from dracykeiton.entity import Entity, simplenode
     from dracykeiton.tb.controller import UserController
-    from dracykeiton.ui.battleuimanager import BattleUIManager, SingleAllyAction, SingleEnemyAction
+    from dracykeiton.ui.battleuimanager import BattleUIManager, SingleAllyAction, SingleEnemyAction, BattleUIHints
     from dracykeiton.tb.turnman import LockableTurnman
     from dracykeiton.action import SimpleEffectProcessor
     from visual import VisualTurnman
@@ -117,20 +117,17 @@ init python:
     
     class GoblinUIHints(Entity):
         @unbound
-        def ui_hints(self, action_type):
-            if action_type == 'battle':
-                return [SingleEnemyAction(self, self.hit)]
-            return []
+        def _init(self):
+            self.req_mod(BattleUIHints)
+            self.ui_action('battle', self.hit)
     Goblin.global_mod(GoblinUIHints)
     
     class GoblinLeaderUIHints(Entity):
         @unbound
-        def ui_hints(self, action_type):
-            if action_type == 'battle':
-                return [SingleEnemyAction(self, self.hit), SingleAllyAction(self, self.inspire)]
-            return []
+        def _init(self):
+            self.req_mod(BattleUIHints)
+            self.ui_action('battle', self.inspire)
     GoblinLeader.global_mod(GoblinLeaderUIHints)
-    
     
     def prepare_battle(left_c, right_c, turnman, keep_dead=False):
         """Prepare battle with given side controllers"""
