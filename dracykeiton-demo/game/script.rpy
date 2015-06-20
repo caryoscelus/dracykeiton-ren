@@ -22,7 +22,7 @@ init python:
     from dracykeiton.compat import *
     from dracykeiton.entity import Entity, simplenode
     from dracykeiton.tb.controller import UserController
-    from dracykeiton.ui.battleuimanager import BattleUIManager
+    from dracykeiton.ui.battleuimanager import BattleUIManager, SingleAllyAction, SingleEnemyAction
     from dracykeiton.tb.turnman import LockableTurnman
     from dracykeiton.action import SimpleEffectProcessor
     from visual import VisualTurnman
@@ -115,6 +115,23 @@ init python:
                 return 0
             return None
     
+    class GoblinUIHints(Entity):
+        @unbound
+        def ui_hints(self, action_type):
+            if action_type == 'battle':
+                return [SingleEnemyAction(self, self.hit)]
+            return []
+    Goblin.global_mod(GoblinUIHints)
+    
+    class GoblinLeaderUIHints(Entity):
+        @unbound
+        def ui_hints(self, action_type):
+            if action_type == 'battle':
+                return [SingleEnemyAction(self, self.hit), SingleAllyAction(self, self.inspire)]
+            return []
+    GoblinLeader.global_mod(GoblinLeaderUIHints)
+    
+    
     def prepare_battle(left_c, right_c, turnman, keep_dead=False):
         """Prepare battle with given side controllers"""
         encounter = Encounter(turnman, keep_dead=keep_dead)
@@ -170,6 +187,8 @@ screen battle_side(manager, side):
             button:
                 vbox:
                     label proxy.name text_bold (proxy == manager.selected)
+                    for act in manager.get_actions(proxy, 'battle'):
+                        textbutton act.name action UFunction(manager.select_action, act)
                     add EntityText(proxy, "hp {0.hp:.0f}/{0.maxhp:.0f}")
                     bar value EntityValue(proxy, 'hp', proxy.maxhp)
                     label "ap {}/{}".format(proxy.ap, proxy.maxap)
