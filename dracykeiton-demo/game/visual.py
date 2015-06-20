@@ -30,7 +30,15 @@ class VisualTurnman(LockableTurnman, SimpleEffectProcessor):
         self.add_effect('hit', self.hit_effect)
     
     def hit_effect(self, action):
-        (attacker, attacked) = action.args
+        args = list(action.args)
+        try:
+            attacker = action.keywords['self']
+        except KeyError:
+            attacker = args.pop(0)
+        try:
+            attacked = action.keywords['enemy']
+        except KeyError:
+            attacked = args.pop(0)
         attacker.visual_state = 'attack'
         attacked.visual_state = 'attacked'
         self.lock()
