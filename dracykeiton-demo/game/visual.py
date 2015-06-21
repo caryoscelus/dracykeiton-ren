@@ -22,11 +22,18 @@ from dracykeiton.compat import *
 from util import UFunction
 from dracykeiton.tb.turnman import LockableTurnman
 from dracykeiton.action import SimpleEffectProcessor
+from dracykeiton.entity import Entity, simplenode
+from dracykeiton.common import LivingEntity, KindEntity
+from dracykeiton.proxyentity import ProxyEntity
+from dracykeiton.interpolate import InterpolatingCache
 import renpy
 
 class VisualTurnman(LockableTurnman, SimpleEffectProcessor):
     def __init__(self, *args, **kwargs):
         super(VisualTurnman, self).__init__(*args, **kwargs)
+    
+    def init_effects(self):
+        super(VisualTurnman, self).init_effects()
         self.add_effect('hit', self.hit_effect)
     
     def hit_effect(self, action):
@@ -47,3 +54,40 @@ class VisualTurnman(LockableTurnman, SimpleEffectProcessor):
     def hit_uneffect(self, attacker, attacked):
         attacker.visual_state = 'default'
         attacked.visual_state = 'default'
+
+class VisualEntity(Entity):
+    @unbound
+    def _init(self):
+        self.req_mod(KindEntity)
+        self.dynamic_property('image')
+        self.dynamic_property('visual_state', 'default')
+        self.add_get_node('image', self.get_image())
+    
+    @simplenode
+    def get_image(self, value):
+        if not value:
+            if not self.kind:
+                return None
+            return self.kind + ' ' + self.visual_state
+        return value
+
+class VisualDyingEntity(Entity):
+    @unbound
+    def _init(self):
+        self.req_mod(VisualEntity)
+        self.req_mod(LivingEntity)
+        self.add_get_node('visual_state', self.check_if_dead())
+    
+    @simplenode
+    def check_if_dead(self, value):
+        if self.living == 'dead':
+            return 'dead'
+        else:
+            return value
+
+class ProxyGoblin(Entity):
+    @unbound
+    def _init(self):
+        self.req_mod(ProxyEntity)
+        self.req_mod(InterpolatingCache, 1)
+        self.cache_interpolate_float('hp', renpy.atl.warpers['linear'])

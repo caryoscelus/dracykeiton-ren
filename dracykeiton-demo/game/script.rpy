@@ -25,13 +25,12 @@ init python:
     from dracykeiton.ui.battleuimanager import BattleUIManager, SingleAllyAction, SingleEnemyAction, BattleUIHints
     from dracykeiton.tb.turnman import LockableTurnman
     from dracykeiton.action import SimpleEffectProcessor
-    from visual import VisualTurnman
     from dracykeiton.proxyentity import ProxyEntity, CachedEntity
     from dracykeiton.interpolate import InterpolatingCache
     from dracykeiton.common.sandbox.goblin import Goblin, GoblinLeader
-    from dracykeiton.common import LivingEntity, KindEntity
     from dracykeiton.ai.sandbox.battleai import AIBattleController
     from dracykeiton.tb.encounter import Encounter
+    from visual import VisualTurnman, VisualDyingEntity, ProxyGoblin
     
     class NamedGoblin(Entity):
         @unbound
@@ -41,43 +40,7 @@ init python:
                 self.name = 'Goblin'
     Goblin.global_mod(NamedGoblin)
     
-    class VisualEntity(Entity):
-        @unbound
-        def _init(self):
-            self.req_mod(KindEntity)
-            self.dynamic_property('image')
-            self.dynamic_property('visual_state', 'default')
-            self.add_get_node('image', self.get_image())
-        
-        @simplenode
-        def get_image(self, value):
-            if not value:
-                if not self.kind:
-                    return None
-                return self.kind + ' ' + self.visual_state
-            return value
-    
-    class VisualDyingEntity(Entity):
-        @unbound
-        def _init(self):
-            self.req_mod(VisualEntity)
-            self.req_mod(LivingEntity)
-            self.add_get_node('visual_state', self.check_if_dead())
-        
-        @simplenode
-        def check_if_dead(self, value):
-            if self.living == 'dead':
-                return 'dead'
-            else:
-                return value
     Goblin.global_mod(VisualDyingEntity)
-    
-    class ProxyGoblin(Entity):
-        @unbound
-        def _init(self):
-            self.req_mod(ProxyEntity)
-            self.req_mod(InterpolatingCache, 1)
-            self.cache_interpolate_float('hp', renpy.atl.warpers['linear'])
     
     class EntityText(Text):
         def __init__(self, proxy, text, *args, **kwargs):
@@ -86,7 +49,10 @@ init python:
             t = self.entity_text.format(self.proxy)
             super(EntityText, self).__init__(t, *args, **kwargs)
         def render(self, width, height, st, at):
-            r = self.proxy.tick(st)
+            try:
+                r = self.proxy.tick(st)
+            except AttributeError:
+                r = False
             self.st = st
             if r:
                 t = self.entity_text.format(self.proxy)
@@ -109,7 +75,10 @@ init python:
             return getattr(self.entity, self.name)
         
         def periodic(self, st):
-            r = self.entity.tick(st)
+            try:
+                r = self.entity.tick(st)
+            except AttributeError:
+                r = False
             self.adjustment.change(self.value())
             if r:
                 return 0
