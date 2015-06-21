@@ -184,10 +184,13 @@ screen battle_side(manager, side):
             button:
                 vbox:
                     label proxy.name text_bold (proxy == manager.selected)
-                    for act in manager.get_actions(proxy, 'battle'):
-                        textbutton act.name action UFunction(manager.select_action, act)
-                    add EntityText(proxy, "hp {0.hp:.0f}/{0.maxhp:.0f}")
-                    bar value EntityValue(proxy, 'hp', proxy.maxhp)
+                    hbox:
+                        for act in manager.get_actions(proxy, 'battle'):
+                            textbutton act.name action UFunction(manager.select_action, act)
+                    add EntityText(proxy, "xp {0.xp:.0f} level {0.level:.0f}")
+                    hbox:
+                        add EntityText(proxy, "hp {0.hp:.0f}/{0.maxhp:.0f}")
+                        bar value EntityValue(proxy, 'hp', proxy.maxhp)
                     label "ap {}/{}".format(proxy.ap, proxy.maxap)
                     if proxy.image:
                         add proxy.image
