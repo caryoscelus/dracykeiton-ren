@@ -28,6 +28,7 @@ init python:
     from dracykeiton.proxyentity import ProxyEntity, CachedEntity
     from dracykeiton.interpolate import InterpolatingCache
     from dracykeiton.common.sandbox.goblin import Goblin, GoblinLeader
+    from dracykeiton.common import CallingEntity
     from dracykeiton.ai.sandbox.battleai import AIBattleController
     from dracykeiton.tb.encounter import Encounter
     from visual import VisualTurnman, VisualDyingEntity, ProxyGoblin
@@ -56,6 +57,13 @@ init python:
             self.ui_action('battle', self.inspire)
     GoblinLeader.global_mod(GoblinLeaderUIHints)
     
+    class CallingUIHints(Entity):
+        @unbound
+        def _init(self):
+            self.req_mod(BattleUIHints)
+            self.ui_action('battle', self.call_unit)
+    CallingEntity.global_mod(CallingUIHints)
+    
     def next_encounter(pc):
         """Prepare next random encounter with pc"""
         encounter = Encounter(VisualTurnman, keep_dead=True)
@@ -69,7 +77,6 @@ label main_menu:
 label start:
     "Dracykeiton demo."
     $ pc = GoblinLeader()
-    $ pc.level = 2
 label random_encounter_loop:
     $ renpy.retain_after_load()
     $ battle = next_encounter(pc)
