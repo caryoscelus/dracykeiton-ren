@@ -22,7 +22,7 @@ from dracykeiton.compat import *
 from util import UFunction
 from dracykeiton.tb.turnman import LockableTurnman
 from dracykeiton.action import SimpleEffectProcessor
-from dracykeiton.entity import Entity, simplenode
+from dracykeiton.entity import Entity, simplenode, depends
 from dracykeiton.common import LivingEntity, KindEntity
 from dracykeiton.proxyentity import ProxyEntity
 from dracykeiton.interpolate import InterpolatingCache
@@ -63,12 +63,13 @@ class VisualEntity(Entity):
         self.dynamic_property('visual_state', 'default')
         self.add_get_node('image', self.get_image())
     
+    @depends('kind', 'visual_state')
     @simplenode
-    def get_image(self, value):
+    def get_image(self, value, kind, visual_state):
         if not value:
-            if not self.kind:
+            if not kind:
                 return None
-            return self.kind + ' ' + self.visual_state
+            return kind + ' ' + visual_state
         return value
 
 class VisualDyingEntity(Entity):
@@ -78,9 +79,10 @@ class VisualDyingEntity(Entity):
         self.req_mod(LivingEntity)
         self.add_get_node('visual_state', self.check_if_dead())
     
+    @depends('living')
     @simplenode
-    def check_if_dead(self, value):
-        if self.living == 'dead':
+    def check_if_dead(self, value, living):
+        if living == 'dead':
             return 'dead'
         else:
             return value
