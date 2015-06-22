@@ -38,6 +38,7 @@ screen battle(manager):
             yalign 1.0
             label "end turn"
             action UFunction(manager.end_turn)
+        label "{}".format(str(manager.turnman.world.state).replace('[', '').replace(']', ''))
         if manager.can_finish():
             button:
                 yalign 1.0
