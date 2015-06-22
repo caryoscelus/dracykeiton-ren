@@ -31,6 +31,7 @@ init python:
     from dracykeiton.common import CallingEntity
     from dracykeiton.ai.sandbox.battleai import AIBattleController
     from dracykeiton.tb.encounter import Encounter
+    from dracykeiton.util import curry
     from visual import VisualTurnman, VisualDyingEntity, ProxyGoblin
     
     class NamedGoblin(Entity):
@@ -64,12 +65,17 @@ init python:
             self.ui_action('battle', self.call_unit)
     CallingEntity.global_mod(CallingUIHints)
     
+    def check_if_dead(e):
+        return e.living == 'dead'
+    
     def next_encounter(pc):
         """Prepare next random encounter with pc"""
         encounter = Encounter(VisualTurnman, keep_dead=True)
         encounter.add_side('left', UserController, 3, predefined=[pc], possible=[Goblin])
         encounter.add_side('right', AIBattleController, 3, possible=[Goblin])
-        return encounter.generate()
+        turnman = encounter.generate()
+        turnman.world.add_lose_condition('left', curry.curry(check_if_dead)(pc))
+        return turnman
 
 label main_menu:
     return
