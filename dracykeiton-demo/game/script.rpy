@@ -56,11 +56,11 @@ init python:
             self.ui_action('battle', self.inspire)
     GoblinLeader.global_mod(GoblinLeaderUIHints)
     
-    def prepare_battle(left_c, right_c, turnman, keep_dead=False):
-        """Prepare battle with given side controllers"""
-        encounter = Encounter(turnman, keep_dead=keep_dead)
-        encounter.add_side('left', left_c, 2, predefined=[Goblin(), GoblinLeader()])
-        encounter.add_side('right', right_c, 3, predefined=[Goblin(), Goblin(), Goblin()])
+    def next_encounter(pc):
+        """Prepare next random encounter with pc"""
+        encounter = Encounter(VisualTurnman, keep_dead=True)
+        encounter.add_side('left', UserController, 3, predefined=[pc], possible=[Goblin])
+        encounter.add_side('right', AIBattleController, 3, possible=[Goblin])
         return encounter.generate()
 
 label main_menu:
@@ -68,10 +68,16 @@ label main_menu:
 
 label start:
     "Dracykeiton demo."
+    $ pc = GoblinLeader()
+    $ pc.level = 2
+label random_encounter_loop:
     $ renpy.retain_after_load()
-    $ battle = prepare_battle(UserController, AIBattleController, VisualTurnman, True)
+    $ battle = next_encounter(pc)
     $ manager = BattleUIManager(battle)
     $ manager.start()
     $ renpy.save('test')
     call screen battle(manager)
+    $ renpy.save('test')
+    "Battle is over.."
+    jump random_encounter_loop
     return
