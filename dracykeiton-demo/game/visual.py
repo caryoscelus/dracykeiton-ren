@@ -65,7 +65,7 @@ class VisualEntity(Entity):
     
     @depends('kind', 'visual_state')
     @simplenode
-    def get_image(self, value, kind, visual_state):
+    def get_image(value, kind, visual_state):
         if not value:
             if not kind:
                 return None
@@ -81,7 +81,7 @@ class VisualDyingEntity(Entity):
     
     @depends('living')
     @simplenode
-    def check_if_dead(self, value, living):
+    def check_if_dead(value, living):
         if living == 'dead':
             return 'dead'
         else:
