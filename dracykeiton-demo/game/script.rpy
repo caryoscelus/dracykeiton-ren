@@ -65,8 +65,11 @@ init python:
             self.ui_action('battle', self.call_unit)
     CallingEntity.global_mod(CallingUIHints)
     
-    def check_if_dead(e):
+    def check_if_dead(e, side):
         return e.living == 'dead'
+    
+    def check_if_empty(side):
+        return side.empty_side()
     
     def next_encounter(pc):
         """Prepare next random encounter with pc"""
@@ -75,6 +78,7 @@ init python:
         encounter.add_side('right', AIBattleController, 3, possible=[Goblin])
         turnman = encounter.generate()
         turnman.world.add_lose_condition('left', curry.curry(check_if_dead)(pc))
+        turnman.world.add_lose_condition('right', curry.curry(check_if_empty)())
         return turnman
 
 label main_menu:
