@@ -88,7 +88,7 @@ label start:
     "Dracykeiton demo."
     $ pc = GoblinLeader()
 label random_encounter_loop:
-    $ renpy.retain_after_load()
+    $ renpy.block_rollback()
     $ battle = next_encounter(pc)
     $ manager = BattleUIManager(battle)
     $ manager.start()
