@@ -37,13 +37,13 @@ screen battle(manager):
         button:
             yalign 1.0
             label "end turn"
-            action UFunction(manager.end_turn)
+            action Function(manager.end_turn)
         label "{}".format(str(manager.turnman.world.state).replace('[', '').replace(']', ''))
         if manager.can_finish():
             button:
                 yalign 1.0
                 label "end encounter"
-                action [UFunction(manager.end_encounter), Return()]
+                action [Function(manager.end_encounter), Return()]
 
 screen battle_side(manager, side):
     default proxies = {}
@@ -64,11 +64,11 @@ screen battle_side(manager, side):
                         label proxy.name text_bold (proxy == manager.selected)
                         hbox:
                             for act in manager.get_actions(proxy, 'battle'):
-                                textbutton act.name action UFunction(manager.select_action, act)
+                                textbutton act.name action Function(manager.select_action, act)
                         add EntityText(proxy, "xp {0.xp:.0f} level {0.level:.0f}")
                         hbox:
                             add EntityText(proxy, "hp {0.hp:.0f}/{0.maxhp:.0f}")
                             bar value EntityValue(proxy, 'hp', proxy.maxhp)
                         label "ap {}/{}".format(proxy.ap, proxy.maxap)
                 
-                action UFunction(manager.clicked, side, proxy)
+                action Function(manager.clicked, side, proxy)

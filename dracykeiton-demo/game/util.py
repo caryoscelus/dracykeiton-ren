@@ -22,10 +22,10 @@ from dracykeiton.compat import *
 import renpy
 from dracykeiton.util import curry
 
-class UFunction(renpy.ui.Action):
-    "Like Function, but make sure to update screen"
+class Function(renpy.ui.Action):
+    "Like default Ren'Py Function, to use in .py files"
     def __init__(self, f, *args, **kw_args):
-        super(UFunction, self).__init__()
+        super(Function, self).__init__()
         self.f = curry.curry(f)(*args, **kw_args)
     def __call__(self):
         r = self.f.__call__()

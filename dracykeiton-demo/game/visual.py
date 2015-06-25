@@ -19,7 +19,7 @@
 ##
 
 from dracykeiton.compat import *
-from util import UFunction
+from util import Function
 from dracykeiton.tb.turnman import LockableTurnman
 from dracykeiton.action import SimpleEffectProcessor
 from dracykeiton.entity import Entity, simplenode, depends
@@ -49,7 +49,7 @@ class VisualTurnman(LockableTurnman, SimpleEffectProcessor):
         attacker.visual_state = 'attack'
         attacked.visual_state = 'attacked'
         self.lock()
-        renpy.ui.timer(1, [UFunction(self.hit_uneffect, attacker, attacked), UFunction(self.unlock)])
+        renpy.ui.timer(1, [Function(self.hit_uneffect, attacker, attacked), Function(self.unlock)])
     
     def hit_uneffect(self, attacker, attacked):
         attacker.visual_state = 'default'
