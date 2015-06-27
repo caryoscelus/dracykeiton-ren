@@ -66,6 +66,7 @@ screen battle_side(manager, side):
                             for act in manager.get_actions(proxy, 'battle'):
                                 textbutton act.name action Function(manager.select_action, act)
                         add EntityText(proxy, "xp {0.xp:.0f} level {0.level:.0f}")
+                        add EntityText(proxy, "dx {0.dexterity}")
                         hbox:
                             add EntityText(proxy, "hp {0.hp:.0f}/{0.maxhp:.0f}")
                             bar value EntityValue(proxy, 'hp', proxy.maxhp)
