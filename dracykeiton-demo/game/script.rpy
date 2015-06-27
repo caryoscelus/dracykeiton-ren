@@ -48,6 +48,9 @@ init python:
         @unbound
         def _init(self):
             self.req_mod(BattleUIHints)
+        
+        @unbound
+        def _load(self):
             self.ui_action('battle', self.hit)
     Goblin.global_mod(GoblinUIHints)
     
@@ -55,6 +58,9 @@ init python:
         @unbound
         def _init(self):
             self.req_mod(BattleUIHints)
+        
+        @unbound
+        def _load(self):
             self.ui_action('battle', self.inspire)
     GoblinLeader.global_mod(GoblinLeaderUIHints)
     
@@ -87,6 +93,7 @@ label main_menu:
 label start:
     "Dracykeiton demo."
     $ pc = GoblinLeader()
+    $ pc.xp = 280
 label random_encounter_loop:
     $ renpy.block_rollback()
     $ battle = next_encounter(pc)
