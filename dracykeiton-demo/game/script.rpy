@@ -20,56 +20,18 @@
 
 init python:
     from dracykeiton.compat import *
-    from dracykeiton.entity import Entity, simplenode
     from dracykeiton.tb.controller import UserController
-    from dracykeiton.ui.battleuimanager import BattleUIManager, SingleAllyAction, SingleEnemyAction, BattleUIHints
+    from dracykeiton.ui.battleuimanager import BattleUIManager
     from dracykeiton.tb.turnman import LockableTurnman
     from dracykeiton.action import SimpleEffectProcessor
     from dracykeiton.proxyentity import ProxyEntity, CachedEntity
     from dracykeiton.interpolate import InterpolatingCache
     from dracykeiton.common.sandbox.goblin import Goblin, GoblinLeader
-    from dracykeiton.common import Caller
     from dracykeiton.ai.sandbox.battleai import AIBattleController
     from dracykeiton.tb.encounter import Encounter
     from dracykeiton.util import curry
-    from visual import VisualTurnman, VisualDyingEntity, ProxyGoblin
-    
-    class NamedGoblin(Entity):
-        @unbound
-        def _init(self):
-            self.dynamic_property('name')
-            if not self.name:
-                self.name = 'Goblin'
-    Goblin.global_mod(NamedGoblin)
-    
-    Goblin.global_mod(VisualDyingEntity)
-    
-    class GoblinUIHints(Entity):
-        @unbound
-        def _init(self):
-            self.req_mod(BattleUIHints)
-        
-        @unbound
-        def _load(self):
-            self.ui_action('battle', self.hit)
-    Goblin.global_mod(GoblinUIHints)
-    
-    class GoblinLeaderUIHints(Entity):
-        @unbound
-        def _init(self):
-            self.req_mod(BattleUIHints)
-        
-        @unbound
-        def _load(self):
-            self.ui_action('battle', self.inspire)
-    GoblinLeader.global_mod(GoblinLeaderUIHints)
-    
-    class CallingUIHints(Entity):
-        @unbound
-        def _init(self):
-            self.req_mod(BattleUIHints)
-            self.ui_action('battle', self.call_unit)
-    Caller.global_mod(CallingUIHints)
+    from visual import VisualTurnman, ProxyGoblin
+    from ui import *
     
     def check_if_dead(e, side):
         return e.living == 'dead'
