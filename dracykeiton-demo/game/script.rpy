@@ -31,7 +31,8 @@ init python:
     from dracykeiton.tb.encounter import Encounter
     from dracykeiton.util import curry
     from visual import VisualTurnman, ProxyGoblin
-    from ui import *
+    # somehow, ren'py doesn't like 'import ui' statement
+    from ui import NOTHING
     
     def check_if_dead(e, side):
         return e.living == 'dead'
