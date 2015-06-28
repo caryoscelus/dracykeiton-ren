@@ -28,7 +28,7 @@ init python:
     from dracykeiton.proxyentity import ProxyEntity, CachedEntity
     from dracykeiton.interpolate import InterpolatingCache
     from dracykeiton.common.sandbox.goblin import Goblin, GoblinLeader
-    from dracykeiton.common import CallingEntity
+    from dracykeiton.common import Caller
     from dracykeiton.ai.sandbox.battleai import AIBattleController
     from dracykeiton.tb.encounter import Encounter
     from dracykeiton.util import curry
@@ -69,7 +69,7 @@ init python:
         def _init(self):
             self.req_mod(BattleUIHints)
             self.ui_action('battle', self.call_unit)
-    CallingEntity.global_mod(CallingUIHints)
+    Caller.global_mod(CallingUIHints)
     
     def check_if_dead(e, side):
         return e.living == 'dead'

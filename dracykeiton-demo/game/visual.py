@@ -23,7 +23,7 @@ from util import Function
 from dracykeiton.tb.turnman import LockableTurnman
 from dracykeiton.action import SimpleEffectProcessor
 from dracykeiton.entity import Entity, simplenode, depends
-from dracykeiton.common import LivingEntity, KindEntity
+from dracykeiton.common import Living, Kind
 from dracykeiton.proxyentity import ProxyEntity
 from dracykeiton.interpolate import InterpolatingCache
 import renpy
@@ -58,7 +58,7 @@ class VisualTurnman(LockableTurnman, SimpleEffectProcessor):
 class VisualEntity(Entity):
     @unbound
     def _init(self):
-        self.req_mod(KindEntity)
+        self.req_mod(Kind)
         self.dynamic_property('image')
         self.dynamic_property('visual_state', 'default')
         self.add_get_node('image', self.get_image())
@@ -76,7 +76,7 @@ class VisualDyingEntity(Entity):
     @unbound
     def _init(self):
         self.req_mod(VisualEntity)
-        self.req_mod(LivingEntity)
+        self.req_mod(Living)
         self.add_get_node('visual_state', self.check_if_dead())
     
     @depends('living')
