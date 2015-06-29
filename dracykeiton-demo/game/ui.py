@@ -33,7 +33,7 @@ NOTHING=None
 class CustomizableCharacterUI(Entity):
     @unbound
     def _load(self):
-        self.ui_action('battle', self.char)
+        self.ui_action('always', self.char)
     
     @action
     def char(self):

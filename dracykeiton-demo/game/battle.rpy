@@ -63,7 +63,8 @@ screen battle_side(manager, side):
                     vbox:
                         label proxy.name text_bold (proxy == manager.selected)
                         hbox:
-                            for act in manager.get_actions(proxy, 'battle'):
+                            $ actions = manager.get_actions(proxy, 'battle') + manager.get_actions(proxy, 'always')
+                            for act in actions:
                                 textbutton act.name action Function(manager.select_action, act)
                         add EntityText(proxy, "xp {0.xp:.0f} level {0.level:.0f}")
                         add EntityText(proxy, "dx {0.dexterity}")
