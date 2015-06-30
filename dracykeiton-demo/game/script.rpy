@@ -26,7 +26,7 @@ init python:
     from dracykeiton.action import SimpleEffectProcessor
     from dracykeiton.proxyentity import ProxyEntity, CachedEntity
     from dracykeiton.interpolate import InterpolatingCache
-    from dracykeiton.common.sandbox.goblin import Goblin, GoblinLeader
+    from dracykeiton.common.sandbox.goblin import Goblin, GoblinLeader, GoblinHealer
     from dracykeiton.ai.sandbox.battleai import AIBattleController
     from dracykeiton.tb.encounter import Encounter
     from dracykeiton.util import curry
@@ -43,8 +43,8 @@ init python:
     def next_encounter(pc):
         """Prepare next random encounter with pc"""
         encounter = Encounter(VisualTurnman, keep_dead=True)
-        encounter.add_side('left', UserController, 3, predefined=[pc], possible=[Goblin])
-        encounter.add_side('right', AIBattleController, 3, possible=[Goblin])
+        encounter.add_side('left', UserController, 3, predefined=[pc], possible=[Goblin, GoblinHealer])
+        encounter.add_side('right', AIBattleController, 3, possible=[Goblin, GoblinHealer])
         turnman = encounter.generate()
         turnman.world.add_lose_condition('left', curry.curry(check_if_dead)(pc))
         turnman.world.add_lose_condition('right', curry.curry(check_if_empty)())

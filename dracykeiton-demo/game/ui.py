@@ -23,7 +23,7 @@ from dracykeiton.entity import Entity, simplenode, mod_dep
 from dracykeiton.action import action
 from dracykeiton.ui.battleuimanager import BattleUIHints
 from dracykeiton.common.sandbox.goblin import Goblin, GoblinLeader
-from dracykeiton.common import Caller
+from dracykeiton.common import Caller, Heal
 from visual import VisualDyingEntity
 from renpy import exports as renpy
 
@@ -67,6 +67,13 @@ class GoblinLeaderUIHints(Entity):
     def _load(self):
         self.ui_action('battle', self.inspire)
 GoblinLeader.global_mod(GoblinLeaderUIHints)
+
+@mod_dep(BattleUIHints)
+class HealUIHints(Entity):
+    @unbound
+    def _load(self):
+        self.ui_action('battle', self.heal)
+Heal.global_mod(HealUIHints)
 
 @mod_dep(BattleUIHints)
 class CallingUIHints(Entity):
