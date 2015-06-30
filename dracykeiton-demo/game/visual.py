@@ -19,7 +19,6 @@
 ##
 
 from dracykeiton.compat import *
-from util import Function
 from dracykeiton.tb.turnman import LockableTurnman
 from dracykeiton.action import SimpleEffectProcessor
 from dracykeiton.entity import Entity, simplenode, depends
@@ -27,6 +26,7 @@ from dracykeiton.common import Living, Kind
 from dracykeiton.proxyentity import ProxyEntity
 from dracykeiton.interpolate import InterpolatingCache
 import renpy
+from renpy.store import Function
 
 class VisualTurnman(LockableTurnman, SimpleEffectProcessor):
     def __init__(self, *args, **kwargs):
