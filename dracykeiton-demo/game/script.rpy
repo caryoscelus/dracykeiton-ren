@@ -32,6 +32,7 @@ init python:
     from dracykeiton.util import curry
     from visual import VisualTurnman, ProxyGoblin
     # somehow, ren'py doesn't like 'import ui' statement
+    # https://github.com/renpy/renpy/issues/676
     from ui import NOTHING
     
     def check_if_dead(e, side):
