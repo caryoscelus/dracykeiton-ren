@@ -20,24 +20,34 @@
 
 init python:
     class EntityText(Text):
-        def __init__(self, proxy, text, *args, **kwargs):
-            self.proxy = proxy
+        """Text containing values from entity and updating when they change.
+        
+        text will be formatted as text.format(entity) so if you need multiple
+        values, use "{0.attr} {0.another}" format.
+        """
+        def __init__(self, entity, text, *args, **kwargs):
+            self.entity = entity
             self.entity_text = text
-            t = self.entity_text.format(self.proxy)
+            t = self.entity_text.format(self.entity)
             super(EntityText, self).__init__(t, *args, **kwargs)
+        
         def render(self, width, height, st, at):
             try:
-                r = self.proxy.tick(st)
+                r = self.entity.tick(st)
             except AttributeError:
                 r = False
             self.st = st
             if r:
-                t = self.entity_text.format(self.proxy)
+                t = self.entity_text.format(self.entity)
                 self.set_text(t)
                 renpy.display.render.redraw(self, 0)
             return super(EntityText, self).render(width, height, st, at)
     
     class EntityValue(BarValue):
+        """BarValue which gets single variable from entity and updates it properly.
+        
+        TODO: dynamic range support
+        """
         def __init__(self, entity, name, range):
             self.entity = entity
             self.name = name
