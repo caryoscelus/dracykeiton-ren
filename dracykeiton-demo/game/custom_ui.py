@@ -27,8 +27,6 @@ from dracykeiton.common import Caller, Heal
 from visual import VisualDyingEntity
 from renpy import exports as renpy
 
-NOTHING=None
-
 @mod_dep(BattleUIHints)
 class CustomizableCharacterUI(Entity):
     @unbound
