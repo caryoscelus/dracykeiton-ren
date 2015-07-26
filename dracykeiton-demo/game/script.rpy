@@ -28,7 +28,7 @@ init python:
     from dracykeiton.interpolate import InterpolatingCache
     from dracykeiton.common.sandbox.goblin import Goblin, GoblinLeader, GoblinHealer
     from dracykeiton.ai.sandbox.battleai import AIBattleController
-    from dracykeiton.tb.encounter import Encounter
+    from dracykeiton.tb.battlegen import BattleGen
     from dracykeiton.util import curry
     from visual import VisualTurnman, ProxyGoblin
     import custom_ui
@@ -41,7 +41,7 @@ init python:
     
     def next_encounter(pc):
         """Prepare next random encounter with pc"""
-        encounter = Encounter(VisualTurnman, keep_dead=True)
+        encounter = BattleGen(VisualTurnman, keep_dead=True)
         encounter.add_side('left', UserController, 3, predefined=[pc], possible=[Goblin, GoblinHealer])
         encounter.add_side('right', AIBattleController, 3, possible=[Goblin, GoblinHealer])
         turnman = encounter.generate()
