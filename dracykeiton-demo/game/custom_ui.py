@@ -20,7 +20,7 @@
 
 from dracykeiton.compat import *
 from dracykeiton.entity import Entity, simplenode, mod_dep
-from dracykeiton.action import action
+from dracykeiton.action import action, category
 from dracykeiton.ui.battleuimanager import BattleUIHints
 from dracykeiton.common.sandbox.goblin import Goblin, GoblinLeader
 from dracykeiton.common import Caller, Heal
@@ -29,10 +29,7 @@ from renpy import exports as renpy
 
 @mod_dep(BattleUIHints)
 class CustomizableCharacterUI(Entity):
-    @unbound
-    def _load(self):
-        self.ui_action('always', self.char)
-    
+    @category('always')
     @action
     def char(self):
         renpy.show_screen('customize_character', self)
@@ -51,31 +48,3 @@ class NamedGoblin(Entity):
 Goblin.global_mod(NamedGoblin)
 
 Goblin.global_mod(VisualDyingEntity)
-
-@mod_dep(BattleUIHints)
-class GoblinUIHints(Entity):
-    @unbound
-    def _load(self):
-        self.ui_action('battle', self.hit)
-Goblin.global_mod(GoblinUIHints)
-
-@mod_dep(BattleUIHints)
-class GoblinLeaderUIHints(Entity):
-    @unbound
-    def _load(self):
-        self.ui_action('battle', self.inspire)
-GoblinLeader.global_mod(GoblinLeaderUIHints)
-
-@mod_dep(BattleUIHints)
-class HealUIHints(Entity):
-    @unbound
-    def _load(self):
-        self.ui_action('battle', self.heal)
-Heal.global_mod(HealUIHints)
-
-@mod_dep(BattleUIHints)
-class CallingUIHints(Entity):
-    @unbound
-    def _load(self):
-        self.ui_action('battle', self.call_unit)
-Caller.global_mod(CallingUIHints)
