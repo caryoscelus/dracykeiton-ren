@@ -24,8 +24,8 @@ init python:
     from dracykeiton.ui.battleuimanager import BattleUIManager
     from dracykeiton.tb.turnman import LockableTurnman
     from dracykeiton.action import SimpleEffectProcessor
-    from dracykeiton.proxyentity import ProxyEntity, CachedEntity
-    from dracykeiton.interpolate import InterpolatingCache
+    from dracykeiton.entity.proxyentity import ProxyEntity, CachedEntity
+    from dracykeiton.entity.interpolate import InterpolatingCache
     from dracykeiton.common.battlefield import TwoSideField
     from dracykeiton.common.sandbox.goblin import Goblin, GoblinLeader, GoblinHealer
     from dracykeiton.ai.sandbox.battleai import AIBattleController

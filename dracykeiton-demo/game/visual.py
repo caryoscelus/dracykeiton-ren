@@ -23,8 +23,8 @@ from dracykeiton.tb.turnman import LockableTurnman
 from dracykeiton.action import SimpleEffectProcessor
 from dracykeiton.entity import Entity, simplenode, depends, mod_dep
 from dracykeiton.common import Living, Kind
-from dracykeiton.proxyentity import ProxyEntity
-from dracykeiton.interpolate import InterpolatingCache
+from dracykeiton.entity.proxyentity import ProxyEntity
+from dracykeiton.entity.interpolate import InterpolatingCache
 import renpy
 from renpy.store import Function
 
