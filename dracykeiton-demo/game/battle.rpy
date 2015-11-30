@@ -52,7 +52,7 @@ screen battle_side(manager, side):
         for entity in side.members:
             if not entity in proxies:
                 $ proxy = ProxyEntity(entity)
-                $ proxy.req_mod(ProxyGoblin)
+                $ proxy.add_mod(ProxyGoblin)
                 $ proxies[entity] = proxy
             else:
                 $ proxy = proxies[entity]

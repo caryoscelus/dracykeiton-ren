@@ -89,6 +89,6 @@ class VisualDyingEntity(Entity):
 class ProxyGoblin(Entity):
     @unbound
     def _init(self):
-        self.req_mod(ProxyEntity)
-        self.req_mod(InterpolatingCache, 1)
+        self.add_mod(ProxyEntity)
+        self.add_mod(InterpolatingCache, 1)
         self.cache_interpolate_float('hp', renpy.atl.warpers['linear'])
